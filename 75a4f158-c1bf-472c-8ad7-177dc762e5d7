@@ -1,0 +1,60 @@
+{
+  "name": "xpacespace TEAMS",
+  "short_name": "XPACE OS",
+  "start_url": "/workspace.html",
+  "display": "standalone",
+  "background_color": "#f4f4f0",
+  "theme_color": "#080808",
+  "icons": [
+    {
+      "src": "/assets/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "id": "/workspace.html",
+  "scope": "/",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "orientation": "portrait-primary",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": [
+    "productivity",
+    "education",
+    "utilities"
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Open Tasks",
+      "short_name": "Tasks",
+      "url": "/workspace.html#tasks",
+      "icons": [
+        {
+          "src": "/assets/favicon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Crew Search",
+      "short_name": "Search",
+      "url": "/workspace.html#search",
+      "icons": [
+        {
+          "src": "/assets/favicon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "description": "xpacespace crew operating system"
+}

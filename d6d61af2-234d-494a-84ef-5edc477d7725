@@ -1,0 +1,160 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function self(uid) { return signedIn() && request.auth.uid == uid; }
+    function ceo() { return signedIn() && request.auth.token.email == 'r4908994@gmail.com'; }
+    function cmo() { return signedIn() && request.auth.token.email == 'sarthakxxu@gmail.com'; }
+    function admin() { return ceo() || cmo(); }
+    function hasProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    function verified() {
+      return hasProfile()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verified == true;
+    }
+
+    match /users/{uid} {
+      // V49: authenticated users may create ONLY their own profile.
+      // Do not couple this to role/approval/username fields.
+      allow create: if self(uid);
+
+      allow read: if admin() || self(uid) || (verified() && resource.data.verified == true);
+
+      allow update: if ceo();
+      allow update: if cmo();
+      allow update: if self(uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.email == resource.data.email;
+
+      allow delete: if ceo();
+    }
+
+    match /usernames/{username} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow read: if signedIn();
+      allow update: if signedIn() && resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /projects/{id} {
+      allow read: if admin() || (verified() && (resource.data.ownerUid == request.auth.uid || resource.data.status == 'approved'));
+      allow create: if verified() && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if admin() || (verified() && resource.data.ownerUid == request.auth.uid);
+      allow delete: if ceo();
+    }
+
+    match /tasks/{id} {
+      allow create: if ceo();
+      allow read: if admin() || (verified() && resource.data.assigneeUid == request.auth.uid);
+      allow update: if ceo() || (verified() && resource.data.assigneeUid == request.auth.uid);
+      allow delete: if ceo();
+    }
+
+    match /ceoRequests/{id} {
+      allow create: if verified() && request.resource.data.fromUid == request.auth.uid;
+      allow read: if ceo() || (signedIn() && resource.data.fromUid == request.auth.uid);
+      allow update: if ceo();
+      allow delete: if ceo();
+    }
+
+    match /cmoRequests/{id} {
+      allow create: if verified() && request.resource.data.fromUid == request.auth.uid;
+      allow read: if admin() || (signedIn() && resource.data.fromUid == request.auth.uid);
+      allow update: if admin();
+      allow delete: if ceo();
+    }
+
+    match /files/{id} {
+      allow create: if verified() && request.resource.data.ownerUid == request.auth.uid;
+      allow read: if admin() || (verified() && resource.data.ownerUid == request.auth.uid);
+      allow update: if admin() || (verified() && resource.data.ownerUid == request.auth.uid);
+      allow delete: if admin() || (verified() && resource.data.ownerUid == request.auth.uid);
+    }
+
+    match /graze/{id} {
+      allow create: if verified() && request.resource.data.ownerUid == request.auth.uid;
+      allow read: if admin() || (verified() && (resource.data.status == 'approved' || resource.data.ownerUid == request.auth.uid));
+      allow update: if admin() || (verified() && resource.data.ownerUid == request.auth.uid);
+      allow delete: if ceo();
+    }
+
+    match /channels/{channelId}/messages/{messageId} {
+      allow read: if verified();
+      allow create: if verified() && request.resource.data.uid == request.auth.uid;
+      allow update: if admin() || (verified() && resource.data.uid == request.auth.uid);
+      allow delete: if admin() || (verified() && resource.data.uid == request.auth.uid);
+    }
+
+
+    match /directChats/{chatId} {
+      allow read: if verified() && request.auth.uid in resource.data.participants;
+      allow create: if verified() && request.auth.uid in request.resource.data.participants;
+      allow update: if verified() && request.auth.uid in resource.data.participants
+        && request.auth.uid in request.resource.data.participants;
+      allow delete: if verified() && request.auth.uid in resource.data.participants;
+    }
+
+    match /directChats/{chatId}/messages/{messageId} {
+      allow read: if verified() && request.auth.uid in get(/databases/$(database)/documents/directChats/$(chatId)).data.participants;
+      allow create: if verified() && request.auth.uid == request.resource.data.senderUid
+        && request.auth.uid in get(/databases/$(database)/documents/directChats/$(chatId)).data.participants;
+      allow update, delete: if verified() && request.auth.uid == resource.data.senderUid;
+    }
+
+
+    match /follows/{id} {
+      allow read: if signedIn();
+      allow create: if verified() && request.resource.data.followerUid == request.auth.uid;
+      allow delete: if verified() && resource.data.followerUid == request.auth.uid;
+      allow update: if false;
+    }
+
+    match /bookmarks/{id} {
+      allow read: if verified() && resource.data.uid == request.auth.uid;
+      allow create: if verified() && request.resource.data.uid == request.auth.uid;
+      allow delete: if verified() && resource.data.uid == request.auth.uid;
+      allow update: if false;
+    }
+
+    match /crewPosts/{id} {
+      allow read: if signedIn();
+      allow create: if verified() && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if verified() && resource.data.ownerUid == request.auth.uid;
+      allow delete: if admin() || (verified() && resource.data.ownerUid == request.auth.uid);
+    }
+
+    match /xp/{uid} {
+      allow read: if admin() || self(uid);
+      allow write: if admin();
+    }
+
+    match /notifications/{id} {
+      allow read: if admin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if admin();
+      allow update: if admin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow delete: if admin();
+    }
+
+    match /searchIndex/{id} {
+      allow read: if signedIn();
+      allow create, update, delete: if admin();
+    }
+
+    match /system/{id} {
+      allow read: if signedIn();
+      allow create, update, delete: if ceo();
+    }
+
+    match /announcements/{id} {
+      allow read: if signedIn();
+      allow create, update: if admin();
+      allow delete: if ceo();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

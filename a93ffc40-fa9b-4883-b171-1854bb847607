@@ -1,0 +1,32 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn(){ return request.auth != null; }
+    function ceo(){ return signedIn() && request.auth.token.email == 'r4908994@gmail.com'; }
+    function cmo(){ return signedIn() && request.auth.token.email == 'sarthakxxu@gmail.com'; }
+    function admin(){ return ceo() || cmo(); }
+    function verified(){
+      return signedIn()
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.verified == true;
+    }
+
+    match /files/{uid}/{allPaths=**} {
+      allow read: if admin() || (signedIn() && request.auth.uid == uid);
+      allow write: if (admin() || verified()) && request.auth.uid == uid && request.resource.size < 20 * 1024 * 1024;
+      allow delete: if admin() || (signedIn() && request.auth.uid == uid);
+    }
+
+    match /projects/{uid}/{allPaths=**} {
+      allow read: if admin() || (signedIn() && request.auth.uid == uid);
+      allow write: if (admin() || verified()) && request.auth.uid == uid && request.resource.size < 20 * 1024 * 1024;
+      allow delete: if admin() || (signedIn() && request.auth.uid == uid);
+    }
+
+    match /graze/{uid}/{allPaths=**} {
+      allow read: if true;
+      allow write: if verified() && request.auth.uid == uid && request.resource.size < 20 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+      allow delete: if admin() || (signedIn() && request.auth.uid == uid);
+    }
+  }
+}

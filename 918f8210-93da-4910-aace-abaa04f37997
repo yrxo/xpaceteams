@@ -1,0 +1,10 @@
+window.XP_FIREBASE_CONFIG={
+ apiKey:"AIzaSyCEdHLYD3kvu_orkgwmH0xsGFMYNRw4q8A",
+ authDomain:"teamxpacex.firebaseapp.com",
+ projectId:"teamxpacex",
+ storageBucket:"teamxpacex.firebasestorage.app",
+ messagingSenderId:"278054377949",
+ appId:"1:278054377949:web:6bb074a3a8840020e83e34",
+ measurementId:"G-EXW8C0KHFE"
+};
+window.XP_ROLES={CEO:"r4908994@gmail.com",CMO:"sarthakxxu@gmail.com"};

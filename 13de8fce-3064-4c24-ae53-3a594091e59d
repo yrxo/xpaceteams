@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>TEAMS — xpacespace</title>
+<meta name="description" content="Private xpacespace TEAMS crew workspace for missions, projects, communications and crew operations.">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div id="boot" class="login-screen">
+  <div class="login-box">
+    <div class="auth-shell">
+      <div class="auth-card">
+        <div class="eyebrow">XPACESPACE / TEAMS</div>
+        <h2 class="boot-title">Loading workspace…</h2>
+        <p class="sub">Authenticating your crew identity.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app-shell" style="display:none">
+
+  <aside class="sidebar">
+    <a class="team-brand" href="index.html" aria-label="xpacespace TEAMS home">
+      <img src="assets/xpace-team.png" alt="xpacespace TEAMS">
+      <span class="team-brand-word">XPACESPACE</span>
+      <span class="team-brand-sub">TEAMS</span>
+    </a>
+
+    <div class="sidebar-section-label">WORKSPACE</div>
+    <nav class="sidebar-nav" aria-label="Workspace navigation">
+      <button class="nav-item active" data-view="home"><span>⌂</span>HOME</button>
+      <button class="nav-item" data-view="missions"><span>◎</span>MISSIONS</button>
+      <button class="nav-item" data-view="projects"><span>◇</span>PROJECTS</button>
+      <button class="nav-item" data-view="tasks"><span>✓</span>TASKS</button>
+      <button class="nav-item" data-view="graze"><span>✦</span>GRAZE SPACE</button>
+      <button class="nav-item" data-view="comms"><span>◌</span>COMMS</button>
+      <button class="nav-item" data-view="chat"><span>◫</span>CHAT</button>
+      <button class="nav-item" data-view="crew"><span>♙</span>CREW</button>
+      <button class="nav-item" data-view="profile"><span>◉</span>PROFILE</button>
+      <button class="nav-item" data-view="search"><span>⌕</span>SEARCH</button>
+      <button class="nav-item" data-view="files"><span>□</span>FILES</button>
+      <button class="nav-item admin-only" data-view="admin" id="adminNav" style="display:none"><span>▦</span>ADMIN</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="system-status"><i></i><span>SYSTEM ONLINE</span></div>
+      <button class="signout" onclick="logout()">SIGN OUT <span>↗</span></button>
+    </div>
+  </aside>
+
+  <main class="workspace-main">
+    <header class="workspace-topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger" aria-label="Open workspace menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <div class="mobile-brand">TEAMS</div>
+        <div class="page-kicker" id="viewTitle">HOME</div>
+      </div>
+      <div class="android-actions"><button class="icon-btn" id="notificationBtn" aria-label="Notifications">♧<span class="notification-dot" id="notificationDot">0</span></button><button class="icon-btn" id="commandBtn" aria-label="XPACE Command">⌘</button></div><div class="user-chip">
+        <div class="user-chip-copy">
+          <strong id="topName">Crew</strong>
+          <small>XPACESPACE CREW</small>
+        </div>
+        <div class="avatar" id="topAvatar">X</div>
+      </div>
+    </header>
+
+    <section class="workspace-content">
+
+      <!-- HOME -->
+      <section class="view active" id="view-home">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">CREW CONSOLE</div>
+            <h1>Good to see you.</h1>
+            <p class="sub">Your identity, missions and workspace at a glance.</p>
+          </div>
+          <div class="section-code">XPS / 01</div>
+        </div>
+
+        <div class="home-grid">
+          <article class="identity-card">
+            <div class="identity-top">
+              <span>XPACESPACE</span>
+              <span>CREW IDENTITY</span>
+            </div>
+            <div class="identity-main">
+              <div class="identity-mark">X</div>
+              <div>
+                <div class="identity-label">CREW MEMBER</div>
+                <h2 id="cardName">Crew Member</h2>
+                <p id="cardRole">CREW MEMBER · PENDING</p>
+              </div>
+            </div>
+            <div class="identity-bottom">
+              <div>
+                <small>XPS ID</small>
+                <b id="cardXps">XPS-PENDING</b>
+              </div>
+              <div class="approval pending" id="cardApproval">CEO APPROVAL PENDING</div>
+            </div>
+          </article>
+
+          <article class="panel status-card">
+            <div class="panel-label">ACCOUNT STATUS</div>
+            <h3 id="statusTitle">Pending CEO approval</h3>
+            <p class="sub" id="statusDesc">Your account is in the approval queue.</p>
+            <div class="rule"></div>
+            <div class="panel-label">APPROVAL WINDOW</div>
+            <div class="countdown" id="countdown">--:--:--</div>
+            <p class="tiny">If still pending at the deadline, server cleanup removes the account.</p>
+          </article>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><span>PROJECTS</span><b id="statProjects">0</b></article>
+          <article class="stat-card"><span>MESSAGES</span><b id="statMessages">0</b></article>
+          <article class="stat-card"><span>CREW STATUS</span><b id="statCrew">—</b></article>
+        </div>
+
+        <div class="v52-home-grid">
+          <article class="panel xp-panel"><div class="panel-label">XPACE PROGRESSION</div><h3>CREW LEVEL <span id="xpLevel">01</span></h3><div class="xp-track"><i id="xpBar"></i></div><div class="xp-meta"><span id="xpValue">0 XP</span><span>NEXT LEVEL</span></div></article>
+          <article class="panel pulse-panel"><div class="panel-label">XPACE PULSE</div><h3>Live workspace signals</h3><div id="pulseList" class="activity"><div class="activity-item"><span>Syncing your orbit…</span></div></div></article>
+        </div>
+
+        <article class="panel activity-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="panel-label">ACTIVITY</div>
+              <h3>Workspace timeline</h3>
+            </div>
+            <span class="live-tag">LIVE</span>
+          </div>
+          <div class="activity">
+            <div class="activity-item"><span>Workspace initialized</span><small>NOW</small></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- MISSIONS -->
+      <section class="view" id="view-missions">
+        <div class="section-head">
+          <div><div class="eyebrow">OPERATIONS</div><h1>MISSIONS</h1><p class="sub">Mission records and active xpacespace operations.</p></div>
+          <div class="section-code">OPS / 02</div>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><div class="panel-label">MISSION MANIFEST</div><h3>Flight operations</h3></div></div>
+          <div class="activity">
+            <div class="activity-item"><span><b>BUDHI</b><small>Model rocket programme</small></span><small>ARCHIVE</small></div>
+            <div class="activity-item"><span><b>BUDHI-2</b><small>Next flight programme</small></span><small>PLANNING</small></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- TASKS -->
+      <section class="view" id="view-tasks">
+        <div class="section-head">
+          <div><div class="eyebrow">OPERATIONS</div><h1>TASKS</h1><p class="sub">Work assigned by leadership. CEO can route tasks directly to @usernames.</p></div>
+          <button class="btn admin-only" id="assignTaskBtn" style="display:none" onclick="openTaskModal()">ASSIGN TASK <span>→</span></button>
+        </div>
+        <article class="panel"><div id="taskList" class="activity"><div class="activity-item"><span>Loading tasks…</span></div></div></article>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="view" id="view-projects">
+        <div class="section-head">
+          <div><div class="eyebrow">WORKSTREAMS</div><h1>PROJECTS</h1><p class="sub">Submit work, follow approvals and collaborate.</p></div>
+          <button class="btn" onclick="openProjectModal()">NEW PROJECT <span>→</span></button>
+        </div>
+        <article class="panel">
+          <div id="projectList" class="activity"><div class="activity-item"><span>No projects yet.</span><small>READY</small></div></div>
+        </article>
+      </section>
+
+      <!-- GRAZE SPACE -->
+      <section class="view" id="view-graze">
+        <div class="section-head">
+          <div><div class="eyebrow">NIGHT SKY ARCHIVE</div><h1>GRAZE SPACE</h1><p class="sub">Share your night-sky captures. CEO approval puts them into the public gallery.</p></div>
+        </div>
+        <div class="two-col">
+          <article class="panel">
+            <div class="panel-label">UPLOAD CAPTURE</div><h3>Your sky, your observation.</h3>
+            <form class="form" id="grazeForm">
+              <div class="field"><label>TITLE</label><input id="grazeTitle" required maxlength="80" placeholder="Milky Way over Bettiah"></div>
+              <div class="field"><label>LOCATION / OBSERVATION</label><input id="grazeLocation" maxlength="120" placeholder="Bettiah, Bihar"></div>
+              <div class="field"><label>PHOTO</label><input id="grazeFile" type="file" accept="image/*" required></div>
+              <button class="btn" type="submit">SUBMIT TO GRAZE SPACE →</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-label">MY SUBMISSIONS</div><h3>Approval status</h3>
+            <div id="myGrazeList" class="activity"><div class="activity-item"><span>Loading…</span></div></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- COMMS -->
+      <section class="view" id="view-comms">
+        <div class="section-head">
+          <div><div class="eyebrow">COMMUNICATIONS</div><h1>COMMS</h1><p class="sub">Talk to the organization and leadership.</p></div>
+          <div class="section-code">COM / 04</div>
+        </div>
+        <div class="two-col">
+          <article class="feature-panel dark">
+            <div class="panel-label">LEADERSHIP CHANNEL</div>
+            <h3>Talk to CEO</h3>
+            <p>Send a private request to the CEO / God Admin.</p>
+            <button class="btn white" onclick="openRequest('CEO')">OPEN CEO CHANNEL <span>→</span></button>
+          </article>
+          <article class="feature-panel">
+            <div class="panel-label">OPERATIONS CHANNEL</div>
+            <h3>Talk to CMO</h3>
+            <p>Reach operations and administration.</p>
+            <button class="btn ghost" onclick="openRequest('CMO')">OPEN CMO CHANNEL <span>→</span></button>
+          </article>
+        </div>
+      </section>
+
+      <!-- CHAT -->
+      <section class="view" id="view-chat">
+        <div class="section-head">
+          <div><div class="eyebrow">PRIVATE CREW CHAT</div><h1>CHAT</h1><p class="sub">Pick a crew member and talk directly — WhatsApp-style, inside XPACE OS.</p></div>
+          <div class="section-code">COM / 06</div>
+        </div>
+        <div class="chat-shell panel">
+          <aside class="chat-people">
+            <div class="chat-search"><span>⌕</span><input id="chatPeopleSearch" placeholder="Search crew or @username" autocomplete="off"></div>
+            <div id="chatPeople" class="chat-people-list"><div class="activity-item"><span>Loading crew…</span></div></div>
+          </aside>
+          <section class="chat-main">
+            <div id="chatEmpty" class="chat-empty"><div>◫</div><h3>Select a crew member</h3><p>Choose someone from the crew list to start a private conversation.</p></div>
+            <div id="chatActive" class="chat-active" style="display:none">
+              <header class="chat-head"><div><strong id="chatPartnerName">Crew Member</strong><small id="chatPartnerMeta">@crew</small></div><button class="mini-btn light" id="chatCloseBtn" type="button">CLOSE</button></header>
+              <div id="chatMessages" class="chat-messages"></div>
+              <form id="chatForm" class="chat-composer"><input id="chatInput" maxlength="2000" autocomplete="off" placeholder="Write a message…"><button class="btn" type="submit">SEND ↑</button></form>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- CREW -->
+      <section class="view" id="view-crew">
+        <div class="section-head">
+          <div><div class="eyebrow">NETWORK</div><h1>CREW</h1><p class="sub">Verified xpacespace team directory.</p></div>
+          <div class="section-code">NET / 05</div>
+        </div>
+        <article class="panel">
+          <div id="crewList" class="activity"><div class="activity-item"><span>Loading verified crew…</span></div></div>
+        </article>
+      </section>
+
+      <!-- SEARCH -->
+      <section class="view" id="view-search">
+        <div class="section-head">
+          <div><div class="eyebrow">XPACE NETWORK</div><h1>SEARCH</h1><p class="sub">Find verified crew, missions, projects and approved observations.</p></div>
+        </div>
+        <article class="search-hero panel">
+          <div class="global-search-wrap"><span>⌕</span><input id="globalSearch" autocomplete="off" placeholder="Search @username, crew, mission, project…"><button class="btn" id="searchBtn">SEARCH</button></div>
+          <div class="search-filters"><button class="search-filter active" data-search-filter="all">ALL</button><button class="search-filter" data-search-filter="people">PEOPLE</button><button class="search-filter" data-search-filter="missions">MISSIONS</button><button class="search-filter" data-search-filter="projects">PROJECTS</button><button class="search-filter" data-search-filter="graze">GRAZE</button></div>
+        </article>
+        <article class="panel"><div class="panel-heading"><div><div class="panel-label">RESULTS</div><h3 id="searchResultTitle">Search XPACE</h3></div></div><div id="searchResults" class="search-results"><div class="empty-state">Type something above to search the crew network.</div></div></article>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="view" id="view-profile">
+        <div class="section-head"><div><div class="eyebrow">CREW IDENTITY</div><h1>PROFILE</h1><p class="sub">Your public-facing xpacespace crew identity.</p></div><button class="btn ghost" onclick="openProfileEditor()">EDIT PROFILE</button></div>
+        <article class="profile-hero panel">
+          <div class="profile-cover"></div><div class="profile-head">
+            <div class="profile-avatar" id="profileAvatar">X</div>
+            <div class="profile-main"><div class="profile-name-row"><h2 id="profileName">Crew Member</h2><span id="profileVerified" class="profile-badge">VERIFIED CREW</span></div><div id="profileUsername" class="profile-username">@crew</div><p id="profileBio" class="sub">Building the next era of space innovation.</p><div class="profile-meta"><span id="profileXps">XPS-PENDING</span><span id="profileDesignation">CREW MEMBER</span></div></div>
+          </div>
+          <div class="profile-stats"><div><b id="profileMissionCount">0</b><span>MISSIONS</span></div><div><b id="profileTaskCount">0</b><span>TASKS DONE</span></div><div><b id="profileGrazeCount">0</b><span>GRAZE</span></div></div>
+        </article>
+        <div class="profile-tabs"><button class="profile-tab active" data-profile-tab="graze">GRAZE</button><button class="profile-tab" data-profile-tab="projects">PROJECTS</button><button class="profile-tab" data-profile-tab="activity">ACTIVITY</button></div>
+        <article class="panel"><div id="profileContent" class="profile-content"></div></article>
+      </section>
+
+      <!-- FILES -->
+      <section class="view" id="view-files">
+        <div class="section-head">
+          <div><div class="eyebrow">LIBRARY</div><h1>FILES</h1><p class="sub">Upload documents and share mission resources with the crew.</p></div>
+        </div>
+        <article class="panel">
+          <form class="form" id="fileForm">
+            <div class="field"><label>FILE</label><input id="workspaceFile" type="file" required></div>
+            <button class="btn" type="submit">UPLOAD FILE →</button>
+          </form>
+          <div id="fileList" class="activity"><div class="activity-item"><span>Loading files…</span></div></div>
+        </article>
+      </section>
+
+      <!-- ADMIN -->
+      <section class="view" id="view-admin">
+        <div class="section-head">
+          <div><div class="eyebrow">CONTROL LAYER</div><h1>ADMIN</h1><p class="sub">Approval queue, roles and organization control.</p></div>
+          <div class="god-badge">GOD ADMIN LAYER</div>
+        </div>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div><div class="panel-label">PENDING CEO APPROVALS</div><h3>Crew approval queue</h3></div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>CREW</th><th>EMAIL</th><th>REQUESTED XPS</th><th>AGE</th><th>ACTION</th></tr></thead>
+              <tbody id="pendingTable"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="admin-grid">
+          <article class="panel"><div class="panel-heading"><div><div class="panel-label">TASK CONTROL</div><h3>Assign work</h3></div><button class="btn" onclick="openTaskModal()">NEW TASK →</button></div><div id="adminTaskList" class="activity"></div></article>
+          <article class="panel"><div class="panel-heading"><div><div class="panel-label">REQUEST INBOX</div><h3>Leadership requests</h3></div></div><div id="requestInbox" class="activity"></div></article>
+        </div>
+
+        <article class="panel"><div class="panel-heading"><div><div class="panel-label">PROJECT CONTROL</div><h3>Project requests</h3></div></div><div id="projectRequests" class="activity"></div></article>
+
+        <article class="panel"><div class="panel-heading"><div><div class="panel-label">GRAZE MODERATION</div><h3>Sky-photo approvals</h3></div></div><div id="grazeModeration" class="gallery-grid"></div></article>
+
+        <article class="panel"><div class="panel-heading"><div><div class="panel-label">FILE CONTROL</div><h3>Uploaded resources</h3></div></div><div id="adminFiles" class="activity"></div></article>
+
+        <div class="two-col">
+          <article class="panel">
+            <div class="panel-label">PROJECT REQUESTS</div><h3>CEO approval queue</h3>
+            <div id="adminProjectList" class="activity"><div class="activity-item"><span>Loading project requests…</span></div></div>
+          </article>
+          <article class="panel">
+            <div class="panel-label">CEO INBOX</div><h3>Talk to CEO requests</h3>
+            <div id="adminRequestList" class="activity"><div class="activity-item"><span>Loading CEO requests…</span></div></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-label">GRAZE SPACE MODERATION</div><h3>Night-sky submissions</h3>
+          <div id="adminGrazeList" class="activity"><div class="activity-item"><span>Loading submissions…</span></div></div>
+        </article>
+
+        <div class="two-col admin-roles">
+          <article class="role-panel god">
+            <span class="role-icon">♛</span>
+            <div class="panel-label">GOD ADMIN</div>
+            <h3>CEO / Full control</h3>
+            <p>Approve or reject accounts, assign XPS IDs and control organization-level operations.</p>
+            <strong>r4908994@gmail.com</strong>
+          </article>
+          <article class="role-panel">
+            <span class="role-icon">◈</span>
+            <div class="panel-label">CMO ADMIN</div>
+            <h3>Operations control</h3>
+            <p>Crew, communications and operational administration. CEO approval remains CEO-only.</p>
+            <strong>sarthakxxu@gmail.com</strong>
+          </article>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <nav class="mobile-nav" aria-label="Primary navigation">
+    <button class="active" data-view="home"><i>⌂</i><span>HOME</span></button>
+    <button data-view="missions"><i>◎</i><span>MISSIONS</span></button>
+    <button data-view="search"><i>⌕</i><span>SEARCH</span></button>
+    <button data-view="tasks"><i>✓</i><span>TASKS</span><b class="nav-badge" id="taskBadge">0</b></button>
+    <button data-view="profile"><i>◉</i><span>PROFILE</span></button>
+  </nav>
+  <button class="app-fab" id="appFab" aria-label="Quick actions">＋</button>
+  <div class="app-toast" id="appToast"></div>
+  <div class="install-banner" id="installBanner"><div class="install-copy"><b>Install XPACE OS</b><small>Add TEAMS to your home screen for an app-like experience.</small></div><button class="dismiss" id="installDismiss">LATER</button><button class="install" id="installAction">INSTALL</button></div>
+  <div class="bottom-sheet-backdrop" id="sheetBackdrop"></div>
+  <section class="bottom-sheet" id="notificationSheet" aria-hidden="true">
+    <div class="sheet-grab"></div><div class="sheet-head"><h3>Notifications</h3><button class="sheet-close" data-close-sheet>×</button></div>
+    <div class="notification-list" id="notificationList"><div class="empty-notifications"><strong>All clear</strong>No new crew notifications.</div></div>
+  </section>
+  <section class="bottom-sheet" id="commandSheet" aria-hidden="true">
+    <div class="sheet-grab"></div><div class="sheet-head"><h3>XPACE Command</h3><button class="sheet-close" data-close-sheet>×</button></div>
+    <div class="command-sheet"><input id="commandSearch" class="command-search" placeholder="Search or run a command…" autocomplete="off"><div class="command-list" id="commandList"></div></div>
+  </section>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div class="drawer-brand"><span class="drawer-x">X</span><div><b>XPACESPACE</b><small>TEAMS / CREW CONSOLE</small></div></div>
+      <button class="drawer-close" id="drawerClose" aria-label="Close workspace menu">×</button>
+    </div>
+    <div class="drawer-rule"></div>
+    <div class="drawer-label">WORKSPACE</div>
+    <nav class="drawer-nav" aria-label="All workspace options">
+      <button class="drawer-item active" data-view="home"><span>⌂</span><b>HOME</b><small>Overview</small></button>
+      <button class="drawer-item" data-view="missions"><span>◎</span><b>MISSIONS</b><small>Operations</small></button>
+      <button class="drawer-item" data-view="projects"><span>◇</span><b>PROJECTS</b><small>Workstreams</small></button>
+      <button class="drawer-item" data-view="tasks"><span>✓</span><b>TASKS</b><small>Assigned work</small></button>
+      <button class="drawer-item" data-view="graze"><span>✦</span><b>GRAZE SPACE</b><small>Night sky</small></button>
+      <button class="drawer-item" data-view="comms"><span>◌</span><b>COMMS</b><small>Leadership</small></button>
+      <button class="drawer-item" data-view="chat"><span>◫</span><b>CHAT</b><small>Private crew</small></button>
+      <button class="drawer-item" data-view="crew"><span>♙</span><b>CREW</b><small>Team directory</small></button>
+      <button class="drawer-item" data-view="search"><span>⌕</span><b>SEARCH</b><small>Find anything</small></button>
+      <button class="drawer-item" data-view="profile"><span>◉</span><b>PROFILE</b><small>Your identity</small></button>
+      <button class="drawer-item" data-view="files"><span>□</span><b>FILES</b><small>Library</small></button>
+      <button class="drawer-item admin-only" id="drawerAdminNav" data-view="admin" style="display:none"><span>▦</span><b>ADMIN</b><small>Control layer</small></button>
+    </nav>
+    <div class="drawer-footer">
+      <div class="drawer-status"><i></i> SYSTEM ONLINE</div>
+      <button class="drawer-signout" onclick="logout()">SIGN OUT <span>↗</span></button>
+    </div>
+  </aside>
+</div>
+
+<!-- FIRST-TIME PROFILE GATE -->
+<div class="onboarding" id="onboarding">
+  <div class="onboard-card">
+    <div class="onboard-head">
+      <div>
+        <div class="eyebrow">XPACESPACE / CREW PROFILE</div>
+        <h2>Complete your crew profile.</h2>
+        <p class="sub">Your designation and mobile number are required before entering TEAMS.</p>
+      </div>
+      <div class="onboard-badge">REQUIRED</div>
+    </div>
+    <form id="onboardingForm" class="form">
+      <div class="onboard-grid">
+        <div class="field"><label>DESIGNATION <span class="required">*</span></label><input id="onboardDesignation" required maxlength="80" placeholder="e.g. Student, CTO, Designer"></div>
+        <div class="field"><label>MOBILE NUMBER <span class="required">*</span></label><input id="onboardMobile" required inputmode="tel" autocomplete="tel" maxlength="20" placeholder="+91 98XXXXXXXX"></div>
+      </div>
+      <div class="field"><label>FULL NAME</label><input id="onboardName" disabled></div>
+      <div class="field"><label>EMAIL</label><input id="onboardEmail" disabled></div>
+      <button class="btn" type="submit">SAVE & ENTER TEAMS <span>→</span></button>
+      <p class="onboard-note">For an existing account, this gate appears again on a new browser/device if the crew profile is incomplete.</p>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="modalTitle">Action</h3><button class="close" onclick="closeModal()">×</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
